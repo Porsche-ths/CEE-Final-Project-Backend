@@ -29,8 +29,8 @@ exports.getItems = async (req, res) => {
 // TODO #1.2: Add an item to DynamoDB
 exports.addItem = async (req, res) => {
   const item_id = uuidv4();
-  const created_date = Date.now();
-  const item = { item_id: item_id, ...req.body, created_date: created_date };
+  //const created_date = Date.now();
+  const item = { item_id: item_id, ...req.body/*, created_date: created_date */};
 
   // You should change the response below.
   const params = {
