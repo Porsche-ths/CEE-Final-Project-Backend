@@ -71,41 +71,8 @@ exports.accessToken = (req, res) => {
   }
 };
 
-/*// Example: Send "GET" request to CV endpoint to get user profile information
-exports.getProfileInformation = (req, res) => {
-  try {
-    const profileOptions = {
-      headers: {
-        Authorization: `Bearer ${req.session.token.access_token}`,
-      },
-    };
-    const profileReq = https.request(
-      "https://www.mycourseville.com/api/v1/public/users/me",
-      profileOptions,
-      (profileRes) => {
-        let profileData = "";
-        profileRes.on("data", (chunk) => {
-          profileData += chunk;
-        });
-        profileRes.on("end", () => {
-          const profile = JSON.parse(profileData);
-          res.send(profile);
-          res.end();
-        });
-      }
-    );
-    profileReq.on("error", (err) => {
-      console.error(err);
-    });
-    profileReq.end();
-  } catch (error) {
-    console.log(error);
-    console.log("Please logout, then login again.");
-  }
-};*/
-
-// USER DATA
-exports.userData = (req, res) => {
+// get/user/info
+exports.userInfo = (req, res) => {
   try {
     const infoOptions = {
       headers: {
@@ -137,9 +104,8 @@ exports.userData = (req, res) => {
   }
 };
 
-// TODO #3.2: Send "GET" request to CV endpoint to get all courses that you enrolled
+// get/user/courses
 exports.getCourses = (req, res) => {
-  // You should change the response below.
   try {
     const coursesOptions = {
       headers: {
@@ -169,51 +135,45 @@ exports.getCourses = (req, res) => {
     console.log(error);
     console.log("Please logout, then login again.")
   }
-  /*res.send("This route should get all courses that you enrolled.");
-  res.end();*/
 };
 
-// TODO #3.4: Send "GET" request to CV endpoint to get all course assignments based on cv_cid
+// get/course/assignments
 exports.getCourseAssignments = (req, res) => {
   const cv_cid = req.params.cv_cid;
-  // You should change the response below.
   try {
-    const assignmentOptions = {
+    const assignmentsOptions = {
       headers: {
         Authorization: `Bearer ${req.session.token.access_token}`,
       },
     };
-    const assignmentReq = https.request(
+    const assignmentsReq = https.request(
       `https://www.mycourseville.com/api/v1/public/get/course/assignments?cv_cid=${cv_cid}&detail=1`,
-      assignmentOptions,
-      (assignmentRes) => {
-        let assignmentData = "";
-        assignmentRes.on("data", (chunk) => {
-          assignmentData += chunk;
+      assignmentsOptions,
+      (assignmentsRes) => {
+        let assignmentsData = "";
+        assignmentsRes.on("data", (chunk) => {
+          assignmentsData += chunk;
         });
-        assignmentRes.on("end", () => {
-          const assignment = JSON.parse(assignmentData);
-          res.send(assignment);
+        assignmentsRes.on("end", () => {
+          const assignments = JSON.parse(assignmentsData);
+          res.send(assignments);
           res.end();
         });
       }
     );
-    assignmentReq.on("error", (error) => {
+    assignmentsReq.on("error", (error) => {
       console.error(error);
     })
-    assignmentReq.end();
+    assignmentsReq.end();
   } catch (error) {
     console.error(error);
     console.log("Please logout, then login again.");
   }
-  /*res.send("This route should get all course assignments based on cv_cid.");
-  res.end();*/
 };
 
-// Outstanding #2
+// get/item/assignment
 exports.getAssignmentDetail = (req, res) => {
-  const itemid = req.params.item_id;
-  // You should change the response below.
+  const item_id = req.params.item_id;
   try {
     const assignmentDetailOptions = {
       headers: {
@@ -221,7 +181,7 @@ exports.getAssignmentDetail = (req, res) => {
       },
     };
     const assignmentDetailReq = https.request(
-      `https://www.mycourseville.com/api/v1/public/get/course/assignments?cv_cid=${cv_cid}&detail=1`,
+      `https://www.mycourseville.com/api/v1/public/get/item/assignment?item_id=${item_id}`,
       assignmentDetailOptions,
       (assignmentDetailRes) => {
         let assignmentDetailData = "";
@@ -243,8 +203,6 @@ exports.getAssignmentDetail = (req, res) => {
     console.error(error);
     console.log("Please logout, then login again.");
   }
-  /*res.send("This route should get assignment details based on item_id.");
-  res.end();*/
 };
 
 exports.logout = (req, res) => {

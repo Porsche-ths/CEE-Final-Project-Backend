@@ -10,19 +10,6 @@ const {
 
 const docClient = new DynamoDBClient({ regions: process.env.AWS_REGION });
 
-exports.getGroupMembers = async (req, res) => {
-  const params = {
-    TableName: process.env.aws_group_members_table_name,
-  };
-  try {
-    const data = await docClient.send(new ScanCommand(params));
-    res.send(data.Items);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
-  }
-};
-
 // TODO #1.1: Get items from DynamoDB
 exports.getItems = async (req, res) => {
   // You should change the response below.
