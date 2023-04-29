@@ -8,9 +8,19 @@ const redirect_uri = `http://${process.env.backendIPAddress}/courseville/access_
 const authorization_url = `https://www.mycourseville.com/api/oauth/authorize?response_type=code&client_id=${process.env.client_id}&redirect_uri=${redirect_uri}`;
 const access_token_url = "https://www.mycourseville.com/api/oauth/access_token";
 
-exports.authApp = (req, res) => {
+// ---------------------------------------- Login / Logout ----------------------------------------
+
+exports.login = (req, res) => {
   res.redirect(authorization_url);
 };
+
+exports.logout = (req, res) => {
+  req.session.destroy();
+  res.redirect(`http://${process.env.frontendIPAddress}/index.html`);
+  res.end();
+};
+
+// ---------------------------------------- Accessing token ----------------------------------------
 
 exports.accessToken = (req, res) => {
   const parsedUrl = url.parse(req.url);
@@ -71,7 +81,12 @@ exports.accessToken = (req, res) => {
   }
 };
 
-// get/user/info
+// ----------------------------------------------------------------------------------------------
+// ---------------------------------------- Request data ----------------------------------------
+// ----------------------------------------------------------------------------------------------
+
+// ---------------------------------------- get/user/info ---------------------------------------
+
 exports.userInfo = (req, res) => {
   try {
     const infoOptions = {
@@ -104,7 +119,8 @@ exports.userInfo = (req, res) => {
   }
 };
 
-// get/user/courses
+// ---------------------------------------- get/user/courses ------------------------------------
+
 exports.getCourses = (req, res) => {
   try {
     const coursesOptions = {
@@ -137,7 +153,8 @@ exports.getCourses = (req, res) => {
   }
 };
 
-// get/course/assignments
+// ---------------------------------- get/course/assignments ----------------------------
+
 exports.getCourseAssignments = (req, res) => {
   const cv_cid = req.params.cv_cid;
   try {
@@ -169,44 +186,4 @@ exports.getCourseAssignments = (req, res) => {
     console.error(error);
     console.log("Please logout, then login again.");
   }
-};
-
-// get/item/assignment
-exports.getAssignmentDetail = (req, res) => {
-  const item_id = req.params.item_id;
-  try {
-    const assignmentDetailOptions = {
-      headers: {
-        Authorization: `Bearer ${req.session.token.access_token}`,
-      },
-    };
-    const assignmentDetailReq = https.request(
-      `https://www.mycourseville.com/api/v1/public/get/item/assignment?item_id=${item_id}`,
-      assignmentDetailOptions,
-      (assignmentDetailRes) => {
-        let assignmentDetailData = "";
-        assignmentDetailRes.on("data", (chunk) => {
-          assignmentDetailData += chunk;
-        });
-        assignmentDetailRes.on("end", () => {
-          const assignmentDetail = JSON.parse(assignmentDetailData);
-          res.send(assignmentDetail);
-          res.end();
-        });
-      }
-    );
-    assignmentDetailReq.on("error", (error) => {
-      console.error(error);
-    })
-    assignmentDetailReq.end();
-  } catch (error) {
-    console.error(error);
-    console.log("Please logout, then login again.");
-  }
-};
-
-exports.logout = (req, res) => {
-  req.session.destroy();
-  res.redirect(`http://${process.env.frontendIPAddress}/index.html`);
-  res.end();
 };
