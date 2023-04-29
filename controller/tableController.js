@@ -1,6 +1,6 @@
 const dotenv = require("dotenv");
 dotenv.config();
-const { v4: uuidv4 } = require("uuid");
+
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { PutCommand, DeleteCommand, ScanCommand } = require("@aws-sdk/lib-dynamodb");
 
