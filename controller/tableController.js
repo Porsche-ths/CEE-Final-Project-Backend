@@ -6,7 +6,6 @@ const { PutCommand, DeleteCommand, ScanCommand, QueryCommand } = require("@aws-s
 
 const docClient = new DynamoDBClient({ regions: process.env.AWS_REGION });
 
-
 exports.getTable = async (req, res) => {
   const params = {
     TableName: process.env.aws_items_table_name,
@@ -19,7 +18,6 @@ exports.getTable = async (req, res) => {
     res.status(500).send(e);
   }
 };
-
 
 exports.addItem = async (req, res) => {
   const student_id = req.body.student_id;
