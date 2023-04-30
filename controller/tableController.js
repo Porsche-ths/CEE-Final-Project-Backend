@@ -22,8 +22,9 @@ exports.getTable = async (req, res) => {
 
 
 exports.addItem = async (req, res) => {
-  const item_id = req.body.assignment_id;
-  const item = { item_id: item_id, ...req.body };
+  const student_id = req.body.student_id;
+  const assignment = req.body.assignment_id;
+  const item = { student_id: student_id, assignment: assignment, ...req.body };
 
   const params = {
     TableName: process.env.aws_items_table_name,
