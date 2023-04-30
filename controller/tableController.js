@@ -2,7 +2,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { PutCommand, DeleteCommand, ScanCommand } = require("@aws-sdk/lib-dynamodb");
+const { PutCommand, DeleteCommand, ScanCommand, QueryCommand } = require("@aws-sdk/lib-dynamodb");
 
 const docClient = new DynamoDBClient({ regions: process.env.AWS_REGION });
 
@@ -56,3 +56,42 @@ exports.deleteItem = async (req, res) => {
     res.status(500).send(error);
   }
 };
+
+exports.getStudentTable = async (req, res) => {
+  const params = {
+      TableName : process.env.aws_items_table_name,
+      FilterExpression : 'student_id = :student_id',
+      ExpressionAttributeValues: {
+        ':student_id': req.params.student_id
+      }
+  }
+  try {
+      const data = await docClient.send(new QueryCommand(params));
+      res.send(data.Items);
+  } catch (err) {
+      console.error('Error scanning item:', err);
+      res.status(500).send(err);
+  }
+}
+
+/*exports.getRow = async (req, res) => {
+  const params = {
+      TableName : process.env.aws_items_table_name,
+      ExpressionAttributeNames: {
+        '#pk': 'students_id',
+        '#sk': 'assignment'
+      },
+      ExpressionAttributeValues: {
+        ':pk': req.params.student_id,
+        ':sk': req.params.assignment_id
+      },
+      KeyConditionExpression: '#pk = :pk AND #sk = :sk'
+  }
+  try {
+      const data = await docClient.send(new ScanCommand(params));
+      res.send(data.Items[0]);
+  } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+  }
+}*/
