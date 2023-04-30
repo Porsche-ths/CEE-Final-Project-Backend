@@ -72,9 +72,9 @@ exports.getStudentTable = async (req, res) => {
       console.error('Error scanning item:', err);
       res.status(500).send(err);
   }
-}
+};
 
-/*exports.getRow = async (req, res) => {
+exports.getRow = async (req, res) => {
   const params = {
       TableName : process.env.aws_items_table_name,
       ExpressionAttributeNames: {
@@ -94,4 +94,4 @@ exports.getStudentTable = async (req, res) => {
       console.error(err);
       res.status(500).send(err);
   }
-}*/
+}
