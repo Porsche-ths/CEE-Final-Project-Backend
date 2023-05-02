@@ -20,8 +20,9 @@ exports.getTable = async (req, res) => {
 };
 
 exports.addItem = async (req, res) => {
-  const item_id = req.body.assignment_id;
-  const item = { item_id: item_id, ...req.body };
+  const student_id = req.body.student_id;
+  const assignment = req.body.assignment_id;
+  const item = { student_id: student_id, assignment: assignment, ...req.body };
 
   const params = {
     TableName: process.env.aws_items_table_name,
@@ -55,10 +56,9 @@ exports.deleteItem = async (req, res) => {
 };
 
 exports.getStudentTable = async (req, res) => {
-    
-  const params = {
 
-      TableName : process.env.table_name,
+  const params = {
+      TableName : process.env.aws_items_table_name,
       FilterExpression : 'students_id = :student_id',
       ExpressionAttributeValues: {
         ':student_id': req.params.student_id
@@ -66,36 +66,29 @@ exports.getStudentTable = async (req, res) => {
   }
 
   try {
-      const data = await docClient.send(new QueryCommand(params));
+      const data = await docClient.send(new ScanCommand(params));
       res.send(data.Items);
-
   } catch (err) {
-
       console.error('Error scanning item:', err);
       res.status(500).send(err);
   }
-}
+};
 
 exports.getRow = async (req, res) => {
-
   const params = {
-      TableName : process.env.table_name,
-      
+      TableName : process.env.aws_items_table_name,
       ExpressionAttributeNames: {
         '#pk': 'students_id',
         '#sk': 'assignment'
       },
-
       ExpressionAttributeValues: {
         ':pk': req.params.student_id,
-        ':sk': req.params.assignment_id
+        ':sk': req.params.item_id
       },
-
       KeyConditionExpression: '#pk = :pk AND #sk = :sk'
   }
-
   try {
-      const data = await docClient.send(new ScanCommand(params));
+      const data = await docClient.send(new QueryCommand(params));
       res.send(data.Items[0]);
   } catch (err) {
       console.error(err);
