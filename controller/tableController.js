@@ -64,7 +64,7 @@ exports.getStudentTable = async (req, res) => {
       }
   }
   try {
-      const data = await docClient.send(new QueryCommand(params));
+      const data = await docClient.send(new ScanCommand(params));
       res.send(data.Items);
   } catch (err) {
       console.error('Error scanning item:', err);
@@ -81,12 +81,12 @@ exports.getRow = async (req, res) => {
       },
       ExpressionAttributeValues: {
         ':pk': req.params.student_id,
-        ':sk': req.params.assignment_id
+        ':sk': req.params.item_id
       },
       KeyConditionExpression: '#pk = :pk AND #sk = :sk'
   }
   try {
-      const data = await docClient.send(new ScanCommand(params));
+      const data = await docClient.send(new QueryCommand(params));
       res.send(data.Items[0]);
   } catch (err) {
       console.error(err);
